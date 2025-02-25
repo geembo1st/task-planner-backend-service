@@ -1,0 +1,3 @@
+CREATE TABLE IF NOT EXISTS users_roles(user_id BIGINT REFERENCES users (id) ON UPDATE RESTRICT ON DELETE CASCADE,
+                                        role_id BIGINT REFERENCES roles (id) ON UPDATE RESTRICT ON DELETE CASCADE
+);
