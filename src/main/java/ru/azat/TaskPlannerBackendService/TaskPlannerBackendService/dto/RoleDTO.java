@@ -4,6 +4,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
+import java.util.List;
+
 @Setter
 @Getter
 @Builder
@@ -18,4 +20,6 @@ public class RoleDTO {
 
     @Size(max = 255, message = "Описание должено быть не более 255 символов")
     private String description;
+
+    private List<Long> taskIds;
 }

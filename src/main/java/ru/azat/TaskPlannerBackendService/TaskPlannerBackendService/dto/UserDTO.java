@@ -5,6 +5,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
+import java.util.List;
+
 @Setter
 @Getter
 @Builder
@@ -25,4 +27,6 @@ public class UserDTO {
     @Email(message = "Неверный формат")
     @Size(max = 255, message = "Имя пользователя не должно превышать 255 символов")
     private String email;
+
+    private List<Long> boardIds;
 }

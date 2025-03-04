@@ -3,6 +3,7 @@ package ru.azat.TaskPlannerBackendService.TaskPlannerBackendService.dto;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -28,5 +29,6 @@ public class TaskDTO {
     @Future(message = "Дата окончания не должна быть раньше настоящего времени")
     private LocalDateTime dueDate;
 
+    @NotNull(message = "Доска обязательна")
     private Long boardId;
 }
