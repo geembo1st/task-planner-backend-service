@@ -110,12 +110,8 @@ public class JwtService {
         return getAllClaimsFromToken(token).get("roles", List.class);
     }
 
-    public String getUsernameFromToken(String token) {
-        return getAllClaimsFromToken(token).getSubject();
-    }
-
-    public String getUserIdFromToken(String token) {
-        return getAllClaimsFromToken(token).get("userId", String.class);
+    public Long getUserIdFromToken(String token) {
+        return getAllClaimsFromToken(token).get("userId", Long.class);
     }
 
 

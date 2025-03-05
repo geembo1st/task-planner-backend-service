@@ -60,7 +60,7 @@ public class JwtFilter extends OncePerRequestFilter {
         if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
             return bearerToken.substring(7);
         }
-        log.warn("JWT не найден");
+        log.warn("JWT не найден в запросе: {}", request.getRequestURI());
         return null;
     }
 }

@@ -23,7 +23,7 @@ public class User {
     @Column(nullable = false, unique = true, name = "username")
     private String username;
 
-    @Column(nullable = false, name = "password")
+    @Column(nullable = false, name = "password", length = 255)
     private String passwordHash;
 
     @Column(nullable = false, unique = true, name = "email")
@@ -32,7 +32,7 @@ public class User {
     @OneToMany(mappedBy = "createdBy", cascade = CascadeType.ALL, orphanRemoval = true)
     List<Board> boards = new ArrayList<>();
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id"),

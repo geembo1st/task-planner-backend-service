@@ -9,11 +9,13 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.azat.TaskPlannerBackendService.TaskPlannerBackendService.dto.JwtAuthDTO;
 import ru.azat.TaskPlannerBackendService.TaskPlannerBackendService.dto.UserCredentialsDTO;
 import ru.azat.TaskPlannerBackendService.TaskPlannerBackendService.dto.UserDTO;
+import ru.azat.TaskPlannerBackendService.TaskPlannerBackendService.dto.UserRegistrationDTO;
 import ru.azat.TaskPlannerBackendService.TaskPlannerBackendService.entity.Role;
 import ru.azat.TaskPlannerBackendService.TaskPlannerBackendService.entity.User;
 import ru.azat.TaskPlannerBackendService.TaskPlannerBackendService.exception.EmailAlreadyExistException;
 import ru.azat.TaskPlannerBackendService.TaskPlannerBackendService.exception.UsernameAlreadyExistException;
 import ru.azat.TaskPlannerBackendService.TaskPlannerBackendService.exception.UsernameNotFoundException;
+import ru.azat.TaskPlannerBackendService.TaskPlannerBackendService.repository.RoleRepository;
 import ru.azat.TaskPlannerBackendService.TaskPlannerBackendService.repository.UserRepository;
 import ru.azat.TaskPlannerBackendService.TaskPlannerBackendService.security.jwt.JwtService;
 
@@ -24,13 +26,14 @@ import java.util.Set;
 @Slf4j
 public class AuthenticationService {
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
 
     private final String DEFAULT_ROLE = "ROLE_USER";
 
     @Transactional
-    public JwtAuthDTO register(UserDTO userDTO) {
+    public JwtAuthDTO register(UserRegistrationDTO userDTO) {
         if (userRepository.existsByEmail(userDTO.getEmail())) {
             log.error("Регистрация у пользователя:{} не прошла", userDTO.getUsername());
             throw new EmailAlreadyExistException("Email уже используется");
@@ -46,9 +49,10 @@ public class AuthenticationService {
         user.setEmail(userDTO.getEmail());
         user.setPasswordHash(passwordEncoder.encode(userDTO.getPassword()));
 
-        Role defaultRole = new Role();
-        defaultRole.setName(DEFAULT_ROLE);
+        Role defaultRole = roleRepository.findByName(DEFAULT_ROLE)
+                .orElseThrow(() -> new RuntimeException("Роль не найдена"));
         user.setRoles(Set.of(defaultRole));
+
         log.info("Регистрация у пользователя {} прошла успешно", user.getUsername());
         userRepository.save(user);
         return jwtService.generateAuthToken(user);
@@ -58,7 +62,6 @@ public class AuthenticationService {
     public JwtAuthDTO authenticate(UserCredentialsDTO credentials) {
         User user = userRepository.findByEmail(credentials.getUsername())
                 .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
-        log.error("Аунтификация у пользователя: {} не прошла", credentials.getUsername());
         if (!passwordEncoder.matches(credentials.getPassword(), user.getPasswordHash())) {
             log.error("Неверный пароль у пользователя: {}", credentials.getUsername());
             throw new BadCredentialsException("Неверный пароль");
