@@ -23,9 +23,6 @@ public class TaskDTO {
     @Max(value = 300, message = "Описание не больше 200 символов")
     private String description;
 
-    @NotBlank(message = "Заполните поле")
-    private String status;
-
     @Future(message = "Дата окончания не должна быть раньше настоящего времени")
     private LocalDateTime dueDate;
 
