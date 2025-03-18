@@ -19,13 +19,6 @@ import java.util.List;
 public class TaskController {
     private final TaskService taskService;
 
-    @GetMapping("/{boardId}")
-    public ResponseEntity<List<TaskDTO>> getAllTasks(@PathVariable Long boardId) {
-        log.info("Запрос на получение всех задач для доски ID: {}", boardId);
-        List<TaskDTO> tasks = taskService.getAllTasksForBoard(boardId);
-        return ResponseEntity.ok(tasks);
-    }
-
     @GetMapping("/{boardId}/status/{status}")
     public ResponseEntity<List<TaskDTO>> getTasksByStatus(@PathVariable Long boardId, @PathVariable TaskStatus status) {
         log.info("Запрос на получение задач для доски ID {}, статус: {}", boardId, status);
@@ -41,7 +34,7 @@ public class TaskController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdTask);
     }
 
-    @PutMapping("/{taskId}/done")
+    @PatchMapping("/{taskId}/done")
     public ResponseEntity<TaskDTO> markTaskAsDone(@PathVariable Long taskId) {
         log.info("Запрос на пометку задачи ID {} как выполненной", taskId);
         TaskDTO updatedTask = taskService.markTaskAsDone(taskId);

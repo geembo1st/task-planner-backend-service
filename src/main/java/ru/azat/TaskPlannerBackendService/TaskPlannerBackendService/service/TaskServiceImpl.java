@@ -3,6 +3,7 @@ package ru.azat.TaskPlannerBackendService.TaskPlannerBackendService.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.azat.TaskPlannerBackendService.TaskPlannerBackendService.dto.TaskDTO;
 import ru.azat.TaskPlannerBackendService.TaskPlannerBackendService.entity.Board;
 import ru.azat.TaskPlannerBackendService.TaskPlannerBackendService.entity.Task;
@@ -25,6 +26,7 @@ public class TaskServiceImpl implements TaskService {
     private final BoardRepository boardRepository;
 
     @Override
+    @Transactional
     public TaskDTO markTaskAsDone(Long taskId) {
         log.info("Изменение статуса задачи на 'DONE', ID: {}", taskId);
         Task task = taskRepository.findById(taskId)
@@ -36,6 +38,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    @Transactional
     public TaskDTO createTask(TaskDTO taskDTO) {
         log.info("Создание новой задачи: {}", taskDTO);
         Board board = boardRepository.findById(taskDTO.getBoardId())
@@ -55,6 +58,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<TaskDTO> getTasksByStatus(Long boardId, TaskStatus status) {
         log.info("Получение задач для доски ID {}, со статусом статус: {}", boardId, status);
         return taskRepository.findByBoardIdAndStatus(boardId, status).stream()
@@ -63,6 +67,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    @Transactional
     public void deleteTask(Long taskId) {
         log.info("Удаление задачи ID: {}", taskId);
         if (!taskRepository.existsById(taskId)) {
@@ -73,6 +78,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<TaskDTO> getAllTasksForBoard(Long boardId) {
         log.info("Получение всех задач для доски ID: {}", boardId);
         return taskRepository.findByBoardId(boardId).stream()
@@ -81,6 +87,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    @Transactional
     public TaskDTO updateTaskDescription(Long taskId, String newDescription) {
         log.info("Обновление описания задачи ID {}: {}", taskId, newDescription);
         Task task = taskRepository.findById(taskId)

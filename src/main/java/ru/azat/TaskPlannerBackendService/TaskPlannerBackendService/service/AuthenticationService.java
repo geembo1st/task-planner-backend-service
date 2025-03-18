@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.azat.TaskPlannerBackendService.TaskPlannerBackendService.dto.JwtAuthDTO;
 import ru.azat.TaskPlannerBackendService.TaskPlannerBackendService.dto.UserCredentialsDTO;
-import ru.azat.TaskPlannerBackendService.TaskPlannerBackendService.dto.UserDTO;
 import ru.azat.TaskPlannerBackendService.TaskPlannerBackendService.dto.UserRegistrationDTO;
 import ru.azat.TaskPlannerBackendService.TaskPlannerBackendService.entity.Role;
 import ru.azat.TaskPlannerBackendService.TaskPlannerBackendService.entity.User;

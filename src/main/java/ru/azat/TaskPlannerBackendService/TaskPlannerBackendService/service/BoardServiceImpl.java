@@ -3,10 +3,10 @@ package ru.azat.TaskPlannerBackendService.TaskPlannerBackendService.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.azat.TaskPlannerBackendService.TaskPlannerBackendService.dto.BoardRequestDTO;
 import ru.azat.TaskPlannerBackendService.TaskPlannerBackendService.dto.BoardResponseDTO;
 import ru.azat.TaskPlannerBackendService.TaskPlannerBackendService.dto.TaskDTO;
-import ru.azat.TaskPlannerBackendService.TaskPlannerBackendService.dto.UserDTO;
 import ru.azat.TaskPlannerBackendService.TaskPlannerBackendService.entity.Board;
 import ru.azat.TaskPlannerBackendService.TaskPlannerBackendService.entity.User;
 import ru.azat.TaskPlannerBackendService.TaskPlannerBackendService.entity.enums.TaskStatus;
@@ -33,6 +33,7 @@ public class BoardServiceImpl implements BoardService {
     private final UserMapper userMapper;
 
     @Override
+    @Transactional
     public BoardResponseDTO createBoard(BoardRequestDTO boardRequestDTO) {
         log.info("Создание новой доски: {}", boardRequestDTO.getTitle());
 
@@ -45,6 +46,7 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public BoardResponseDTO getBoardById(Long boardId) {
         log.info("Получение доски с ID: {}", boardId);
         Board board = boardRepository.findById(boardId)
@@ -55,6 +57,7 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<BoardResponseDTO> getAllBoards() {
         log.info("Получение всех досок");
         return boardRepository.findAll().stream()
@@ -63,6 +66,7 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<BoardResponseDTO> getBoardsByUser(Long userId) {
         log.info("Получение досок пользователя с ID: {}", userId);
         User user = userMapper.toEntity(userService.getUserById(userId));
@@ -72,6 +76,7 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
+    @Transactional
     public BoardResponseDTO updateBoard(Long boardId, BoardRequestDTO boardRequestDTO) {
         log.info("Обновление доски с ID: {}", boardId);
         Board board = boardRepository.findById(boardId)
@@ -86,12 +91,14 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
+    @Transactional
     public void deleteBoard(Long boardId) {
         log.info("Удаление доски с ID: {}", boardId);
         boardRepository.deleteById(boardId);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<TaskDTO> getAllTasksForBoard(Long boardId) {
         log.info("Получение задач для доски с ID: {}", boardId);
         return taskRepository.findByBoardId(boardId).stream()
@@ -100,6 +107,7 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<TaskDTO> getTasksByStatus(Long boardId, TaskStatus status) {
         log.info("Получение задач для доски с ID: {} со статусом: {}", boardId, status);
         return taskRepository.findByBoardIdAndStatus(boardId, status).stream()

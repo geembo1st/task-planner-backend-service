@@ -10,9 +10,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.azat.TaskPlannerBackendService.TaskPlannerBackendService.dto.JwtAuthDTO;
+import ru.azat.TaskPlannerBackendService.TaskPlannerBackendService.dto.RefreshTokenDTO;
 import ru.azat.TaskPlannerBackendService.TaskPlannerBackendService.dto.UserCredentialsDTO;
 import ru.azat.TaskPlannerBackendService.TaskPlannerBackendService.dto.UserRegistrationDTO;
 import ru.azat.TaskPlannerBackendService.TaskPlannerBackendService.service.AuthenticationService;
+import ru.azat.TaskPlannerBackendService.TaskPlannerBackendService.service.UserService;
 
 @RequiredArgsConstructor
 @RestController
@@ -20,6 +22,7 @@ import ru.azat.TaskPlannerBackendService.TaskPlannerBackendService.service.Authe
 @RequestMapping("/api/v1/auth/")
 public class AuthController {
     private final AuthenticationService authenticationService;
+    private final UserService userService;
 
     @PostMapping("/login")
     public ResponseEntity<JwtAuthDTO> login(@Valid @RequestBody UserCredentialsDTO credentials) {
@@ -33,5 +36,12 @@ public class AuthController {
         log.info("Регистрация пользователя -> {}", userRegistrationDTO.getEmail());
         JwtAuthDTO jwtAuthDTO = authenticationService.register(userRegistrationDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(jwtAuthDTO);
+    }
+
+    @PostMapping("/refresh-token")
+    public ResponseEntity<JwtAuthDTO> refreshToken(@Valid @RequestBody RefreshTokenDTO refreshTokenDTO) {
+        log.info("Запрос на обновление токена");
+        JwtAuthDTO jwtAuthDTO = userService.refreshToken(refreshTokenDTO);
+        return ResponseEntity.ok(jwtAuthDTO);
     }
 }
