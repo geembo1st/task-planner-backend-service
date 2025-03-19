@@ -18,6 +18,5 @@ public interface UserService {
     void deleteUser(Long userId);
     UserDTO getUserById(Long id);
     User getCurrentUser();
-    JwtAuthDTO signIn(UserCredentialsDTO userCredentialsDto);
     JwtAuthDTO refreshToken(RefreshTokenDTO refreshTokenDto);
 }

@@ -12,7 +12,7 @@ import lombok.Data;
 public class UserCredentialsDTO {
     @NotBlank(message = "Email не должен быть пустым")
     @Email(message = "Некорректный email")
-    String username;
+    String email;
 
     @NotBlank(message = "Пароль не должен быть пустым")
     String password;

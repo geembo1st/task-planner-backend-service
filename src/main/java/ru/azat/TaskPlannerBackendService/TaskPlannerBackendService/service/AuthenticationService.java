@@ -59,14 +59,17 @@ public class AuthenticationService {
 
     @Transactional(readOnly = true)
     public JwtAuthDTO authenticate(UserCredentialsDTO credentials) {
-        User user = userRepository.findByEmail(credentials.getUsername())
+        User user = userRepository.findByEmail(credentials.getEmail())
                 .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
+
         if (!passwordEncoder.matches(credentials.getPassword(), user.getPasswordHash())) {
-            log.error("Неверный пароль у пользователя: {}", credentials.getUsername());
+            log.error("Неверный пароль у пользователя: {}", credentials.getEmail());
             throw new BadCredentialsException("Неверный пароль");
         }
-        log.info("Аунтификация у пользователя: {} прошла успешно", credentials.getUsername());
+
+        log.info("Аутентификация у пользователя: {} прошла успешно", credentials.getEmail());
         return jwtService.generateAuthToken(user);
     }
+
 }
 

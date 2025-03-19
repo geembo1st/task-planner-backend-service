@@ -126,22 +126,6 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new UserNotFoundException("Пользователь не найден"));
     }
 
-
-    @Override
-    @Transactional(readOnly = true)
-    public JwtAuthDTO signIn(UserCredentialsDTO userCredentialsDto) {
-        User user = userRepository.findByEmail(userCredentialsDto.getUsername())
-                .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
-
-        if (!passwordEncoder.matches(userCredentialsDto.getPassword(), user.getPasswordHash())) {
-            log.error("Неверный пароль у пользователя: {}", userCredentialsDto.getUsername());
-            throw new BadCredentialsException("Неверный пароль");
-        }
-
-        log.info("Аутентификация пользователя: {} успешна", userCredentialsDto.getUsername());
-        return jwtService.generateAuthToken(user);
-    }
-
     @Override
     @Transactional
     public JwtAuthDTO refreshToken(RefreshTokenDTO refreshTokenDTO) {
