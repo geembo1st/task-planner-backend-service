@@ -32,7 +32,7 @@ public class UserController {
         return ResponseEntity.ok(updatedUser);
     }
 
-    @DeleteMapping("/{userId}")
+    @DeleteMapping("/delete/{userId}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long userId) {
         log.info("Запрос на удаление пользователя с id: {}", userId);
         userService.deleteUser(userId);
