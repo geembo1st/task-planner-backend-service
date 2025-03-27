@@ -1,9 +1,6 @@
 package ru.azat.TaskPlannerBackendService.TaskPlannerBackendService.dto;
 
-import jakarta.validation.constraints.Future;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -16,11 +13,11 @@ import java.time.LocalDateTime;
 public class TaskDTO {
     private Long id;
 
-    @Max(value = 200, message = "Название не больше 200 символов")
+    @Size(max = 200, message = "Название не больше 200 символов")
     @NotBlank(message = "Заполните поле")
     private String title;
 
-    @Max(value = 300, message = "Описание не больше 200 символов")
+    @Size(max = 300, message = "Описание не больше 300 символов")
     private String description;
 
     @Future(message = "Дата окончания не должна быть раньше настоящего времени")

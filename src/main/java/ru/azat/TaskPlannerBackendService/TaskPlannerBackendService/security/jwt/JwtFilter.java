@@ -28,10 +28,18 @@ import java.util.stream.Collectors;
 public class JwtFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
     private final CustomUserServiceImpl customUserService;
+
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request,
                                     @NonNull HttpServletResponse response,
                                     @NonNull FilterChain filterChain) throws ServletException, IOException {
+        String requestURI = request.getRequestURI();
+        if (requestURI.startsWith("/auth/login") || requestURI.startsWith("/auth/register") || requestURI.startsWith("/auth/refresh-token")) {
+            log.info("Запрос к {} пропускается без проверки JWT", requestURI);
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         String token = getTokenFromRequest(request);
         if (token != null && jwtService.validateJwtToken(token)) {
             setCustomUserDetailsToSecurityContextHolder(token);

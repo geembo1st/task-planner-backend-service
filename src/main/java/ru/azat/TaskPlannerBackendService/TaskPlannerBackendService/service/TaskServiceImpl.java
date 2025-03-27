@@ -98,5 +98,14 @@ public class TaskServiceImpl implements TaskService {
         log.info("Описание задачи ID {} обновлено", taskId);
         return result;
     }
+
+    @Override
+    public TaskDTO getTasksById(Long taskId) {
+        log.info("Получение задачи по ID: {}", taskId);
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new TaskNotFoundException("Задача не найдена"));
+        TaskDTO taskDTO = taskMapper.toDTO(task);
+        return taskDTO;
+    }
 }
 

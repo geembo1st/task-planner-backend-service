@@ -13,7 +13,7 @@ import ru.azat.TaskPlannerBackendService.TaskPlannerBackendService.service.TaskS
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/tasks")
+@RequestMapping("/api/v1/tasks")
 @RequiredArgsConstructor
 @Slf4j
 public class TaskController {
@@ -24,6 +24,12 @@ public class TaskController {
         log.info("Запрос на получение задач для доски ID {}, статус: {}", boardId, status);
         List<TaskDTO> tasks = taskService.getTasksByStatus(boardId, status);
         return ResponseEntity.ok(tasks);
+    }
+
+    @GetMapping("/{taskId}")
+    public ResponseEntity<TaskDTO> getTaskById(@PathVariable Long taskId) {
+        TaskDTO taskDTO = taskService.getTasksById(taskId);
+        return ResponseEntity.ok(taskDTO);
     }
 
     @PostMapping("/{boardId}")

@@ -10,12 +10,12 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 @EnableJpaAuditing
 public class TaskPlannerBackendServiceApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(TaskPlannerBackendServiceApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(TaskPlannerBackendServiceApplication.class, args);
+    }
 
-	@Bean
-	public ModelMapper modelMapper() {
-		return new ModelMapper();
-	}
+    @Bean
+    public ModelMapper modelMapper() {
+        return new ModelMapper();
+    }
 }

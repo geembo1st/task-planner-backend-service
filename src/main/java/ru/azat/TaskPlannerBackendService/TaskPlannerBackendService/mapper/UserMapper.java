@@ -29,7 +29,7 @@ public class UserMapper {
         } else {
             user.setBoards(new ArrayList<>());
         }
-         return user;
+        return user;
     }
 
     public UserDTO toDTO(User user) {

@@ -19,9 +19,9 @@ public class UserController {
 
     @GetMapping("/profile")
     public ResponseEntity<UserDTO> getUserProfile(@AuthenticationPrincipal UserDetails userDetails) {
-        Long userId = Long.valueOf(userDetails.getUsername());
-        log.info("Запрос профиля пользователя: {}", userId);
-        UserDTO userDTO = userService.getUserProfile(userId);
+        String email = userDetails.getUsername();
+        log.info("Запрос профиля пользователя: {}", email);
+        UserDTO userDTO = userService.getUserByEmail(email);
         return ResponseEntity.ok(userDTO);
     }
 
