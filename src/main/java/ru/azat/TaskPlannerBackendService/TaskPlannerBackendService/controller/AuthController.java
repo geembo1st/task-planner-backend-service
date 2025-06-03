@@ -13,6 +13,8 @@ import ru.azat.TaskPlannerBackendService.TaskPlannerBackendService.dto.JwtAuthDT
 import ru.azat.TaskPlannerBackendService.TaskPlannerBackendService.dto.RefreshTokenDTO;
 import ru.azat.TaskPlannerBackendService.TaskPlannerBackendService.dto.UserCredentialsDTO;
 import ru.azat.TaskPlannerBackendService.TaskPlannerBackendService.dto.UserRegistrationDTO;
+import ru.azat.TaskPlannerBackendService.TaskPlannerBackendService.kafka.dto.EmailEvent;
+import ru.azat.TaskPlannerBackendService.TaskPlannerBackendService.kafka.producer.KafkaProducerService;
 import ru.azat.TaskPlannerBackendService.TaskPlannerBackendService.service.AuthenticationService;
 import ru.azat.TaskPlannerBackendService.TaskPlannerBackendService.service.UserService;
 
@@ -23,11 +25,15 @@ import ru.azat.TaskPlannerBackendService.TaskPlannerBackendService.service.UserS
 public class AuthController {
     private final AuthenticationService authenticationService;
     private final UserService userService;
+    private final KafkaProducerService kafkaProducerService;
 
     @PostMapping("/login")
     public ResponseEntity<JwtAuthDTO> login(@Valid @RequestBody UserCredentialsDTO credentials) {
         log.info("Попытка входа пользователя -> {}", credentials.getEmail());
         JwtAuthDTO jwtAuthDTO = authenticationService.authenticate(credentials);
+        EmailEvent event = new EmailEvent(credentials.getEmail(), "Добро пожаловать!", "Вы успешно вошли в систему, " + credentials.getEmail());
+        kafkaProducerService.sendEmailEvent(event);
+        log.info("Событие отправлено в Kafka для пользователя {}", credentials.getEmail());
         return ResponseEntity.ok(jwtAuthDTO);
     }
 
@@ -35,6 +41,10 @@ public class AuthController {
     public ResponseEntity<JwtAuthDTO> register(@Valid @RequestBody UserRegistrationDTO userRegistrationDTO) {
         log.info("Регистрация пользователя -> {}", userRegistrationDTO.getEmail());
         JwtAuthDTO jwtAuthDTO = authenticationService.register(userRegistrationDTO);
+
+        EmailEvent event = new EmailEvent(userRegistrationDTO.getEmail(), "Добро пожаловать!", "Спасибо за регистрацию, " + userRegistrationDTO.getEmail());
+        kafkaProducerService.sendEmailEvent(event);
+        log.info("Событие отправлено в Kafka для пользователя {}", userRegistrationDTO.getEmail());
         return ResponseEntity.status(HttpStatus.CREATED).body(jwtAuthDTO);
     }
 
